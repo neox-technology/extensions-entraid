@@ -5,6 +5,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Neox.Extensions.EntraId</RootNamespace>
+    <IsPackable>true</IsPackable>
+    <Description>Extensions ASP.NET Core pour traduire les exceptions de consentement Microsoft Entra ID.</Description>
   </PropertyGroup>
 
   <ItemGroup>

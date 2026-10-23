@@ -1,6 +1,10 @@
 {
-  "name": "@neox/extensions-entraid-msal",
+  "name": "@neox-technology/extensions-entraid-msal",
   "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/neox-technology/extensions-entraid.git"
+  },
   "type": "module",
   "exports": {
     ".": "./src/index.ts"

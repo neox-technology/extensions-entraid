@@ -59,9 +59,11 @@ jobs:
         env:
           NUGET_USER: ${{ secrets.NUGET_USER }}
           NUGET_TOKEN: ${{ secrets.NUGET_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GUARD_ENTRIES: |
             Secret|projet|NUGET_USER|.+
             Secret|projet|NUGET_TOKEN|.+
+            Secret|organization|NPM_TOKEN|.+
         run: |
           set -euo pipefail
           failed=0
@@ -163,6 +165,57 @@ jobs:
           source="https://nuget.pkg.github.com/neox-technology/index.json"
           dotnet nuget push artifacts/packages/Release/Shipping/*.nupkg --source "$source" --api-key "$NUGET_TOKEN" --skip-duplicate
           dotnet nuget push artifacts/packages/Release/Shipping/*.snupkg --source "$source" --api-key "$NUGET_TOKEN" --skip-duplicate
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: https://npm.pkg.github.com
+          scope: "@neox-technology"
+
+      - name: Variables and secrets guard
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GUARD_ENTRIES: |
+            Secret|organization|NPM_TOKEN|.+
+        run: |
+          set -euo pipefail
+          failed=0
+          while IFS='|' read -r KIND SCOPE NAME PATTERN; do
+            [ -z "${KIND:-}" ] && continue
+            VALUE="${!NAME:-}"
+            if [ -z "$PATTERN" ]; then
+              PATTERN='.+'
+            fi
+            if [ -z "$VALUE" ]; then
+              echo "::error::${KIND} from ${SCOPE} not provided."
+              failed=1
+              continue
+            fi
+            if ! [[ "$VALUE" =~ $PATTERN ]]; then
+              echo "::error::${KIND} from ${SCOPE} malformated."
+              failed=1
+            fi
+          done <<< "$GUARD_ENTRIES"
+          if [ "$failed" -ne 0 ]; then
+            exit 1
+          fi
+
+      - name: Set npm package version
+        working-directory: src/Neox.Extensions.EntraId.Msal
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          npm pkg set version="$VERSION"
+
+      - name: Publish npm package to GitHub Packages
+        working-directory: src/Neox.Extensions.EntraId.Msal
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+          npm publish --tag preview
 
   finalize-git:
     needs: publish
