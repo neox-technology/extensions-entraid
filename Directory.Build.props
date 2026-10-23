@@ -1,0 +1,14 @@
+<Project>
+  <Import Project="Sdk.props" Sdk="Microsoft.DotNet.Arcade.Sdk" />
+
+  <PropertyGroup>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/neox-technology/extensions-entraid</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/neox-technology/extensions-entraid</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+</Project>
