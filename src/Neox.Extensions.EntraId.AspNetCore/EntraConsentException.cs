@@ -23,12 +23,12 @@ public static class EntraConsentException {
             return true;
         }
 
-        if (Contains(exception, "AADSTS65001") || Contains(exception, "AADSTS90094")) {
+        if (Contains(exception, "AADSTS90094")) {
             problem = new EntraConsentProblem("admin_consent_required", description, scopes, null, null);
             return true;
         }
 
-        if (errorCode is "consent_required") {
+        if (Contains(exception, "AADSTS65001") || errorCode is "consent_required") {
             problem = new EntraConsentProblem("consent_required", description, scopes, null, null);
             return true;
         }
