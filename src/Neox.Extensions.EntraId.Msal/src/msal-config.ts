@@ -1,11 +1,8 @@
 import {
   type AccountInfo,
-  type AuthenticationResult,
   type Configuration,
-  type IPublicClientApplication,
   type RedirectRequest,
   type SilentRequest,
-  InteractionRequiredAuthError,
   LogLevel,
   PublicClientApplication,
 } from '@azure/msal-browser'
@@ -33,6 +30,18 @@ function readViteEntraEnv(): EntraEnv {
 
 export function isEntraConfigured(env: EntraEnv = readViteEntraEnv()) {
   return Boolean(env.clientId && env.tenantId)
+}
+
+export function createApiSilentRequest(
+  account: AccountInfo | undefined,
+  forceRefresh: boolean | undefined,
+  env: EntraEnv = readViteEntraEnv(),
+): SilentRequest {
+  return {
+    account,
+    forceRefresh,
+    scopes: env.apiScopes,
+  }
 }
 
 export function createLoginRequest(env: EntraEnv = readViteEntraEnv()): RedirectRequest {
@@ -66,43 +75,6 @@ export function createMsalConfig(env: EntraEnv = readViteEntraEnv()): Configurat
         logLevel: LogLevel.Warning,
       },
     },
-  }
-}
-
-export async function acquireApiAccessToken(
-  instance: IPublicClientApplication,
-  account: AccountInfo | null | undefined,
-  env: EntraEnv = readViteEntraEnv(),
-): Promise<AuthenticationResult> {
-  const request: SilentRequest = {
-    account: account ?? undefined,
-    scopes: env.apiScopes,
-  }
-
-  try {
-    return await instance.acquireTokenSilent(request)
-  } catch (err) {
-    const problem = parseEntraConsentProblem(err)
-
-    if (problem) {
-      const recovery = await recoverEntraConsent(instance, {
-        ...problem,
-        scopes: problem.scopes.length > 0 ? problem.scopes : env.apiScopes,
-      })
-
-      if (recovery.kind === 'redirect') {
-        return new Promise<AuthenticationResult>(() => {})
-      }
-
-      throw new Error(recovery.kind === 'denied' ? recovery.description : (recovery.adminConsentUrl ?? problem.description))
-    }
-
-    if (err instanceof InteractionRequiredAuthError) {
-      await instance.acquireTokenRedirect(request)
-      return new Promise<AuthenticationResult>(() => {})
-    }
-
-    throw err
   }
 }
 

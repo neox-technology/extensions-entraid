@@ -1,3 +1,5 @@
+/// <reference path="./env.d.ts" />
+
 type EnvBag = Record<string, string | undefined>
 
 function runtimeEnv(): EnvBag {

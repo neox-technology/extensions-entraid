@@ -2,4 +2,6 @@ export { ApiError, fetchAllPages, parseApiErrorMessage, useAdminApi } from './ap
 export { parseEntraConsentProblem, recoverEntraConsent } from './consent'
 export type { EntraConsentProblem, EntraConsentRecovery } from './consent'
 export { EntraMsalProvider } from './entra-msal-provider'
-export { acquireApiAccessToken, createLoginRequest, getMsalInstance, isEntraConfigured } from './msal-config'
+export { createLoginRequest, getMsalInstance, isEntraConfigured } from './msal-config'
+export { acquireApiAccessToken, ensureEntraSession, useEntraSession } from './session'
+export type { EntraSessionState } from './session'
