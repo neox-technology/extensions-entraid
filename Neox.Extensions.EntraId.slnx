@@ -1,3 +1,7 @@
 <Solution>
+  <Folder Name="/tests/" />
+  <Folder Name="/tests/automated/">
+    <Project Path="tests/automated/Neox.Extensions.EntraId.AspNetCore.Tests/Neox.Extensions.EntraId.AspNetCore.Tests.csproj" />
+  </Folder>
   <Project Path="src/Neox.Extensions.EntraId.AspNetCore/Neox.Extensions.EntraId.AspNetCore.csproj" />
 </Solution>

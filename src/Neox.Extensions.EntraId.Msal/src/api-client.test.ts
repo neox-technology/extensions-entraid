@@ -95,7 +95,7 @@ describe('performAdminFetch', () => {
     await vi.waitFor(() => expect(instance.loginRedirect).toHaveBeenCalledTimes(1))
     expect(instance.acquireTokenSilent).toHaveBeenCalledTimes(2)
     expect(fetchImpl).toHaveBeenCalledTimes(2)
-    expect(instance.loginRedirect).toHaveBeenCalledWith(expect.objectContaining({ redirectStartPage: '/' }))
+    expect(instance.loginRedirect).toHaveBeenCalledWith(expect.objectContaining({ redirectStartPage: window.location.href }))
     void pending
   })
 

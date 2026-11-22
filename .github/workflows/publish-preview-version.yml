@@ -201,6 +201,13 @@ jobs:
             exit 1
           fi
 
+      - name: Test npm package
+        working-directory: src/Neox.Extensions.EntraId.Msal
+        run: |
+          set -euo pipefail
+          npm ci --registry https://registry.npmjs.org
+          npm test
+
       - name: Set npm package version
         working-directory: src/Neox.Extensions.EntraId.Msal
         env:
